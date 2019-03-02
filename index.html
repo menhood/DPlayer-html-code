@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <title>DPlayer代码在线编辑器</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+        <script src="https://cdnjs.loli.net/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <link href="https://cdnjs.loli.net/ajax/libs/bootstrap-validator/0.5.3/css/bootstrapValidator.min.css" rel="stylesheet">
+        <script src="https://cdnjs.loli.net/ajax/libs/bootstrap-validator/0.5.3/js/bootstrapValidator.min.js"></script>
+        <script src="https://cdnjs.loli.net/ajax/libs/blueimp-md5/2.10.0/js/md5.min.js"></script>
+        <link href="https://cdnjs.loli.net/ajax/libs/highlight.js/9.9.0/styles/github-gist.min.css" rel="stylesheet">
+        <script src="https://cdnjs.loli.net/ajax/libs/highlight.js/9.9.0/highlight.min.js"></script>
+        <script src="https://cdnjs.loli.net/ajax/libs/clipboard.js/2.0.4/clipboard.min.js"></script>
+    </head>
+    
+<body>
+    <div class="container">
+	<div class="row clearfix">
+		<div class="col-md-6 column">
+			<h3>参数调整</h3>
+			<div id="control">
+			<!--单视频-->    
+            <form class="bs-example bs-example-form" role="form" id="single-form" style="display:none">
+                <h4>单视频</h4>
+            <div class="input-group">
+                <span class="input-group-addon">视频地址</span>
+                <input type="text" class="form-control" placeholder="url" id="url">
+            </div>
+            <br>
+            <div class="input-group">
+                <span class="input-group-addon">封面地址</span>
+                <input type="text" class="form-control" placeholder="pic" id="pic">
+            </div>
+            <br>
+            <div class="input-group">
+                <span class="input-group-addon">外挂弹幕地址</span>
+                <input type="text" class="form-control" placeholder="addition" id="addition">
+            </div>
+            <br>
+            <div class="input-group">
+                <span class="input-group-addon">API服务器地址</span>
+                <input type="text" class="form-control" placeholder="弹幕服务器" id="single-api">
+            </div>
+            
+            </form>
+        
+            <!--列表-->
+            <form class="bs-example bs-example-form" role="form" id="list-form">
+                <h4>视频列表</h4>
+            <div class="input-group">
+                <span class="input-group-addon">视频列表地址</span>
+                <input type="text" class="form-control" placeholder="https://ddns.menhood.wang:2233/video/" id="urls">
+            </div>
+            <br>
+            <div class="input-group">
+                <span class="input-group-addon">视频封面地址</span>
+                <input type="text" class="form-control" placeholder="https://ddns.menhood.wang:2233/video/01_pic.jpg" id="pics">
+            </div>
+            <br>
+            <div class="input-group">
+                <span class="input-group-addon">视频总集数</span>
+                <input type="text" class="form-control" placeholder="12" id="max">
+            </div>
+            <br>
+            <div class="input-group">
+                <span class="input-group-addon">外挂弹幕地址</span>
+                <input type="text" class="form-control" placeholder="https://api.menhood.wang/xml2json/json/" id="additions">
+            </div>
+            <br>
+            <div class="input-group">
+                <span class="input-group-addon">API服务器地址</span>
+                <input type="text" class="form-control" placeholder="https://api.menhood.wang/dplayer/" id="list-api">
+            </div>
+            
+            </form>
+        </div>
+
+            <br>
+            <div class="btn-group">
+                <button class="btn btn-default" id="s" >模式</button>
+                <button class="btn btn-default" id="g" >生成</button>
+                <button class="btn btn-default" id="c" data-clipboard-target="#text">复制</button>
+            </div>
+            <br>
+            <div id="copyinfo" class="alert alert-warning" style="display:none">
+            <a href="#" class="close" data-dismiss="alert">
+                &times;
+            </a>
+            <strong>代码已复制</strong>
+            </div>
+		</div>
+		
+		<div class="col-md-6 column">
+			<h3>代码区域</h3>
+<pre >
+<code id="code" >
+function generate(){
+    console.log('点击生成按钮生成')
+}
+</code>
+</pre>
+<textarea id="text" style="opacity:0;position:fixed;z-index:-1"></textarea>
+		</div>
+	</div>
+</div>
+        
+<script>
+//初始化插件
+
+var clipboard = new ClipboardJS('#c');
+
+var mode="list";
+var listarr = [];
+var additionsarr = [];
+var listcode = '';
+
+
+//添加数据
+function pushdata(){
+    //获取数据
+    var urls = document.getElementById('urls').value;
+    var max = document.getElementById('max').value;
+    var additions = document.getElementById('additions').value;
+    //插入数据
+    for(var i=0;i<max;i++){
+    var o = i + 1 ;
+    //判断是否小于10，以添加0
+    if(i<10){
+        var liststr = "'"+urls + "0" + o + ".mp4"+"'";
+        var addstr = "'"+additions + "0" + o + ".json"+"'";
+        listarr.push(liststr);
+        additionsarr.push(addstr);
+    }else{
+        var liststr = "'"+urls  + o + ".mp4"+"'";
+        var addstr = "'"+additions + o + ".json"+"'";
+        listarr.push(liststr);
+        additionsarr.push(addstr);
+    }
+    }
+
+for(var l=0;l<max;l++){
+    var m = l+1;
+    if(l<10){
+        listcode = listcode + "<a href='javascript:void(0);' onclick='switchDPlayer(" + l + ")' id='p" + l + "'>P0"+ m +"</a>\n";
+    }else{
+        listcode = listcode + "<a href='javascript:void(0);' onclick='switchDPlayer(" + l + ")' id='p" + l + "'>P"+ m +"</a>\n";
+    }
+}
+}
+
+//处理数据
+var style='',css_js='',single_js='',list_js='',switch_js='';
+function splicing(){
+    var urls = document.getElementById('urls').value;
+    var pics = document.getElementById('pics').value;
+    var listapi = document.getElementById('list-api').value;
+    var additions = document.getElementById('additions').value;
+    var addswitch = '';
+    
+    if(listapi === ""){listapi="https://api.suxingboke.com/"};
+    if(pics === ""){pics = "";};
+    if(additions === ""){additions = "";}else{additions = "addition:['"+additions+"01.json'],";addswitch = "addition:[additionsarr[pn]],";};
+ style = "<meta http-equiv='Content-Type' content='text\/html; charset=UTF-8' \/>"+
+            "<style>\n"+
+            ".playing{box-sizing: border-box;border: 1px solid #00a1d6; color:#00a1d6;}\n"+
+            ".dplistul {z-index:99;float:left!important;width:auto!important;list-style:none!important;padding:0!important;margin:0!important;border:0!important;transition:1s!important;}\n"+
+            ".dplistul a {text-decoration: none;float:left!important;list-style:none!important;margin:5px!important;border-radius:10px!important;height:30px!important;line-height:30px!important;text-align:center!important;width:50px!important;background-color:#fff!important;color:pink!important;cursor: pointer!important;}\n"+
+            ".dplistul a:hover {background-color:pink!important;color:#fff!important;}\n"+
+            ".dplayer-danmaku-item{text-shadow: rgb(0, 0, 0) 1px 0px 1px, rgb(0, 0, 0) 0px 1px 1px, rgb(0, 0, 0) 0px -1px 1px, rgb(0, 0, 0) -1px 0px 1px!important;opacity: 1!important;font-weight: bold!important;}\n"+
+            ".wbf{}\n"+
+            "</style>\n";
+
+ css_js ="<link href=\'https://cdnjs.loli.net/ajax/libs/dplayer/1.25.0/DPlayer.min.css\' rel=\'stylesheet\'>\n"+
+            "<div id=\'dplayer\'></div><ul class='dplistul'>\n"+ listcode +"</ul>\n"+
+            "<script src=\'https://cdnjs.loli.net/ajax/libs/dplayer/1.25.0/DPlayer.min.js\'><\/script>\n"+
+            "<script src=\'https://api.menhood.wang/getcip/getcipv2.php\'><\/script>\n"+
+            "<script src=\'https://cdnjs.loli.net/ajax/libs/hls.js/0.9.1/hls.min.js\'><\/script>\n"+
+            "<script src=\'https://cdnjs.loli.net/ajax/libs/flv.js/1.4.2/flv.min.js\'><\/script>\n"+
+            "<script src=\'https://cdnjs.loli.net/ajax/libs/dashjs/2.9.2/dash.all.min.js\'><\/script>\n"+
+            "<script src=\'https://cdnjs.loli.net/ajax/libs/blueimp-md5/2.10.0/js/md5.min.js\'><\/script>\n"+
+            "<script>\n";
+            
+ single_js = "var url='"+ document.getElementById('url').value +"';\n"+
+                "var pic='"+ document.getElementById('pic').value +"';\n"+
+                "var addition='"+ document.getElementById('addition').value +"';\n"+
+                "var api='"+ document.getElementById('single-api').value +"';\n"+
+                "const dp = new DPlayer({\n"+
+                    "container: document.getElementById(\'dplayer\'),\n"+
+                    "video: {url: url},\n"+
+                    "danmaku: {id: md5(url),\n"+
+                    "api: \'https://api.prprpr.me/dplayer/\',\n"+
+                     addition +
+                    "user: cip\n"+
+                    "}});\n";
+                
+ list_js =   "var listarr=["+ listarr +"];\n"+
+                "var additionsarr=["+ additionsarr +"];\n"+
+                "var url=listarr[0];\n"+
+                "var pic='"+ document.getElementById('pics').value +"';\n"+
+                "var additions=additionsarr[0];\n"+
+                "var api='"+ listapi +"';\n"+
+                
+                "const dp = new DPlayer({\n"+
+                    "container: document.getElementById(\'dplayer\'),\n"+
+                    "video: {url: url},\n"+
+                    "danmaku: {id: md5(url),\n"+
+                    "api: api,\n"+additions+
+                    "user: cip\n"+
+                    "}});\n";              
+                    
+ switch_js = "function switchDPlayer(pn){\n"+
+                    "dp.switchVideo({\n"+
+                        "url: listarr[pn],\n"+
+                        "pic: pic\n"+
+                        "}, {\n"+
+                        "id: md5(listarr[pn]),\n"+
+                        "api: api,\n"+
+                         addswitch +
+                        "user: cip\n"+
+                    "});\n"+
+                    "dp.toggle();\n"+
+                    "for(var i=0;i<listarr.length;i++){\n"+
+                        "document.getElementById('p'+i).className=\'wbf\';\n"+
+                    "};\n"+
+                    "document.getElementById('p'+pn).className=\'playing\';}\n"+
+                    "<\/script>\n";}
+                    
+//生成代码                    
+$("#g").click(function(){
+    //清空数据
+    listarr = [];
+    additionsarr = [];
+    listcode = '';
+    //判断模式
+    if(mode === "single"){
+    code = css_js+single_js;
+    }else{
+    pushdata();
+    splicing();
+    code = style+css_js+list_js+switch_js;
+    }; 
+    document.getElementById("code").innerHTML = htmlEncode(code);//写入html
+    hljs.configure({useBR: false});//关闭换行
+    $('pre code').each(function(i, block) {
+        hljs.highlightBlock(block);
+    });//高亮代码
+    //插入到textarea准备复制
+    var text = $('#code').text();
+    var t=document.getElementById("text");
+    t.value = text;
+});
+
+//切换模式
+$("#s").click(function(){
+    if($('#single-form').is(':hidden')){
+        $('#single-form').show();
+        $('#list-form').hide();
+        mode="single";
+    }else{
+        $('#single-form').hide();
+        $('#list-form').show(); 
+        mode="list";
+    }
+});
+
+//复制事件
+clipboard.on('success', function(e) {
+    $('#copyinfo').show('slow');
+    setTimeout(function(){ $('#copyinfo').hide('slow'); }, 3000);
+});
+
+//HTML代码转义
+function htmlEncode(html) {
+    return $("<div>").text(html).html();
+}
+function htmlDecode(encodedHtml) {
+    return $("<div>").html(encodedHtml).text();
+}
+</script>
+</body>
+</html>
