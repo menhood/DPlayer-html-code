@@ -130,7 +130,7 @@ function pushdata(){
     //判断是否小于10，以添加0
     if(i<9){
         var liststr = "'"+urls + "0" + o + ".mp4"+"'";
-        var addstr = "'"+additions + "0" + o + ".json"+"'";
+        var addstr = "'"+additions  + o + ".json"+"'";
         listarr.push(liststr);
         additionsarr.push(addstr);
     }else{
@@ -162,7 +162,7 @@ function splicing(){
     
     if(listapi === ""){listapi="https://api.suxingboke.com/"};
     if(pics === ""){pics = "";};
-    if(additions === ""){additions = "";}else{additions = "addition:['"+additions+"01.json'],";addswitch = "addition:[additionsarr[pn]],";};
+    if(additions === ""){additions = "";}else{additions = "addition:[additionsarr[0]],";addswitch = "addition:[additionsarr[pn]],";};
  style = "<meta http-equiv='Content-Type' content='text\/html; charset=UTF-8' \/>"+
             "<style>\n"+
             ".playing{box-sizing: border-box;border: 1px solid #00a1d6; color:#00a1d6;}\n"+
