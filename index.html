@@ -14,76 +14,420 @@
         <link href="https://cdnjs.loli.net/ajax/libs/highlight.js/9.9.0/styles/github-gist.min.css" rel="stylesheet">
         <script src="https://cdnjs.loli.net/ajax/libs/highlight.js/9.9.0/highlight.min.js"></script>
         <script src="https://cdnjs.loli.net/ajax/libs/clipboard.js/2.0.4/clipboard.min.js"></script>
-    </head>
+        <style>
+        .al-toggle-button {
+            appearance:none;
+            -webkit-appearance:none;
+            position:relative;
+            width:40px;
+            height:22px;
+            background:#dfdfdf;
+            border-radius:16px;
+            border:1px solid #dfdfdf;
+            outline:0;
+            box-sizing:border-box;
+            bottom: -5px;
+        }
+        .al-toggle-button:checked {
+            border-color:#04be02;
+            background-color:#04be02
+        }
+        .al-toggle-button:before, .al-toggle-button:after {
+            content:" ";
+            position:absolute;
+            top:0;
+            left:0;
+            height:20px;
+            border-radius:15px;
+            transition:transform .3s;
+            transition:-webkit-transform .3s;
+            transition:transform .3s, -webkit-transform .3s;
+            -webkit-transition:-webkit-transform .3s
+        }
+        .al-toggle-button:before {
+            width:20px;
+            background-color:#fdfdfd
+        }
+        .al-toggle-button:after {
+            width:20px;
+            background-color:white;
+            box-shadow:0 1px 3px rgba(0, 0, 0, 0.4)
+        }
+        .al-toggle-button:checked:before {
+            transform:scale(0);
+            -webkit-transform:scale(0)
+        }
+        .al-toggle-button:checked:after {
+            transform:translateX(20px);
+            -webkit-transform:translateX(20px)
+        }
+        </style>
+</head>
     
 <body>
-    <div class="container">
+    <div class="container-fluid ">
 	<div class="row clearfix">
-		<div class="col-md-6 column">
+		<div class="col-lg-6 column">
 			<h3>参数调整</h3>
+			<div class="btn-group" id="mode_btn" >
+                <button class="btn btn-default" id="s" >单个视频</button>
+                <button class="btn btn-info" id="l" >视频列表</button>
+                <button class="btn btn-default" id="i" >嵌入代码（开发中）</button>
+            </div>
+			
 			<div id="control">
+			    <!--通用参数-->
+			    <table class="table" id="general_conf" >
+				<thead>
+					<tr>
+						<th>
+							<h4>通用参数</h4>
+						</th>
+						<th>
+						</th>
+						<th>
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>
+							<label for="live">直播模式:</label>
+                            <input type="checkbox" class="al-toggle-button" id="live">
+						</td>
+						<td>
+							<label for="autoplay">自动播放:</label>
+                            <input type="checkbox" class="al-toggle-button" id="autoplay">
+						</td>
+						<td>
+							<label for="unlimited">海量弹幕:</label>
+                            <input type="checkbox" class="al-toggle-button" id="unlimited">
+						</td>
+					</tr>
+					<tr class="success">
+					    <td>
+							<label for="screenshot">截图功能:</label>
+                            <input type="checkbox" class="al-toggle-button" id="screenshot">
+						</td>
+						<td>
+						    <label for="lang">语言</label>
+		                    <select class="form-control" id="lang" >
+			                    <option value="zh-cn">简体中文</option>
+			                    <option value="zh-tw">繁體中文</option>
+			                    <option value="en">English</option>
+		                    </select>
+						</td>
+						<td>
+							<label for="preload">预加载</label>
+		                    <select class="form-control" id="preload" >
+			                    <option value="auto">自动</option>
+			                    <option value="none">无</option>
+			                    <option value="metadata">元数据</option>
+		                    </select>
+						</td>
+						
+						
+					</tr>
+					<tr class="error">
+					    <td>
+							<label for="mutex">播放互斥:</label>
+                            <input type="checkbox" checked="checked" class="al-toggle-button" id="mutex">
+						</td>
+						<td>
+							<label for="type">视频类型</label>
+		                    <select class="form-control" id="type" >
+			                    <option value="auto">自动</option>
+			                    <option value="hls">hls</option>
+			                    <option value="flv">flv</option>
+			                    <option value="dash">dash</option>
+			                    <option value="webtorrent">webtorrent</option>
+			                    <option value="normal">normal</option>
+		                    </select>
+						</td>
+						<td>
+						    <label for="subtitle_type">字幕类型</label>
+							<select class="form-control" id="subtitle_type" >
+			                    <option value="webvtt">webvtt</option>
+			                    <option value="ass">ass（目前不支持）</option>
+		                    </select>
+						</td>
+					</tr>
+					<tr class="warning">
+					    <td>
+							<label for="hotkey">操作热键:</label>
+                            <input type="checkbox" checked="checked" class="al-toggle-button" id="hotkey">
+						</td>
+						<td>
+							<div class="input-group">
+                            <span class="input-group-addon">默认音量</span>
+                            <input type="text" class="form-control" placeholder="0.7" id="volume">
+                            </div>
+						</td>
+						
+						<td>
+							<div class="input-group">
+                            <span class="input-group-addon">主题颜色</span>
+                            <input type="text" class="form-control" placeholder="#b7daff" id="theme">
+                            </div>
+						</td>
+					    
+					</tr>
+					<tr class="info">
+						<td>
+							<label for="loop">循环播放:</label>
+                            <input type="checkbox" class="al-toggle-button" id="loop">
+						</td>
+						<td>
+							<div class="input-group">
+                            <span class="input-group-addon">容器ID</span>
+                            <input type="text" class="form-control" placeholder="dplayer" id="container">
+                            </div>
+						</td>
+						
+						<td>
+							<div class="input-group">
+                            <span class="input-group-addon">Logo</span>
+                            <input type="text" class="form-control" placeholder="https://" id="logo">
+                            </div>
+						</td>
+					</tr>
+					<tr class="defult">
+						<td>
+							<label for="api_btn">自定后端:</label>
+                            <input type="checkbox" class="al-toggle-button" id="api_btn">
+						</td>
+						<td>
+							<div class="form-group">
+                            <label for="api">后端地址</label>
+                            <input type="text" class="form-control" placeholder="https://api.menhood.wang/dplayer/" id="api" disabled>
+                            </div>
+						</td>
+						
+						<td>
+							<div class="form-group">
+                            <label for="max">总集数</label>
+                            <input type="text" class="form-control" placeholder="1" id="max">
+                            </div>
+						</td>
+					</tr>
+					<tr class="info">
+						<td>
+							<label for="danmaku_btn">弹幕开关:</label>
+                            <input type="checkbox" checked="checked" class="al-toggle-button" id="danmaku_btn">
+						</td>
+						<td >
+							<div class="form-group">
+                            <label for="api">弹幕解析服务器：</label>
+                            <input type="text" class="form-control" placeholder="https://api.prprpr.me/v3/bilibili?cid=" id="analysis_api" >
+                            </div>
+						</td>
+						<td >
+							<div class="form-group">
+                            <label for="const">实例名称：</label>
+                            <input type="text" class="form-control" placeholder="dp" id="const" >
+                            </div>
+						</td>
+						
+					</tr>
+				</tbody>
+			</table>
+            
 			<!--单视频-->    
-            <form class="bs-example bs-example-form" role="form" id="single-form" style="display:none">
+            <form class="bs-example bs-example-form" role="form" id="single_form" style="display:none">
                 <h4>单视频</h4>
             <div class="input-group">
                 <span class="input-group-addon">视频地址</span>
-                <input type="text" class="form-control" placeholder="url" id="url">
+                <input type="text" class="form-control" placeholder="url" id="single_url">
             </div>
+            <br>
+                <div class="input-group " data-toggle="modal" data-target="#add_qualitys" style="cursor:pointer" >
+                    <span class="input-group-addon" >视频质量</span>
+                    <input type="text" class="form-control" placeholder="←点击添加" id="quality" disabled>
+                </div>
+                <!-- 模态框（Modal） -->
+                <div class="modal fade" id="add_qualitys" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                            <h4 class="modal-title" id="ModalLabel">清晰度参数</h4>
+                        </div>
+                        <div class="modal-body">
+                            
+                            <br>
+                            <div class="input-group" >
+                                <span class="input-group-addon">默认清晰度（从0起）</span>
+                                <input type="text" class="form-control" placeholder="0" id="qualitys_default_0">
+                            </div>
+                            <br>
+                            <div id="qualitys_0" class="qualitys" >
+                            <div class="input-group" >
+                                <span class="input-group-addon">清晰度</span>
+                                <input type="text" class="form-control" placeholder="HD" id="qualitys_name_0">
+                            </div>
+                            <br>
+                            <div class="input-group" >
+                                <span class="input-group-addon">视频地址</span>
+                                <input type="text" class="form-control" placeholder="https://ddns.menhood.wang:2233/video/01.mp4" id="qualitys_urls_0">
+                            </div>
+                            <br>
+                            <label for="type">视频类型</label>
+		                    <select class="form-control" id="qualitys_type_0" >
+			                    <option value="auto">自动</option>
+			                    <option value="hls">hls</option>
+			                    <option value="flv">flv</option>
+			                    <option value="dash">dash</option>
+			                    <option value="webtorrent">webtorrent</option>
+			                    <option value="normal">normal</option>
+		                    </select>
+                            
+                            </div>
+                            <div class="modal-footer" id="qualitys_btn" >
+                            <button type="button" class="btn btn-primary" id="qualitys_add" >增加</button>
+                            <button type="button" class="btn btn-danger" id="qualitys_del" >删除</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                            </div>
+                        </div>
+                        
+                    </div><!-- /.modal-content -->
+                </div><!-- /.modal -->
+                </div>
             <br>
             <div class="input-group">
                 <span class="input-group-addon">封面地址</span>
-                <input type="text" class="form-control" placeholder="pic" id="pic">
+                <input type="text" class="form-control" placeholder="pic" id="single_pic">
+            </div>
+            <br>
+            <div class="input-group">
+                <span class="input-group-addon">预览地址（thumbnails)</span>
+                <input type="text" class="form-control" placeholder="pic" id="thumbnails">
             </div>
             <br>
             <div class="input-group">
                 <span class="input-group-addon">外挂弹幕地址</span>
-                <input type="text" class="form-control" placeholder="addition" id="addition">
+                <input type="text" class="form-control" placeholder="https://api.menhood.wang/xml2json/json/01.json 或者 https://api.prprpr.me/dplayer/v3/bilibili?cid=25494475" id="single_addition">
             </div>
-            <br>
-            <div class="input-group">
-                <span class="input-group-addon">API服务器地址</span>
-                <input type="text" class="form-control" placeholder="弹幕服务器" id="single-api">
-            </div>
-            
             </form>
         
             <!--列表-->
-            <form class="bs-example bs-example-form" role="form" id="list-form">
+            <form class="bs-example bs-example-form" role="form" id="list_form">
                 <h4>视频列表</h4>
+                <p class="help-block">二选一，只填写目录或只填写分P，生成时请保证另一模式的文本框内容为空。如只填写目录地址，文件形式应为01.mp4、02.mp4...10.mp4、11.mp4、12.mp4 以此类推，外挂弹幕json文件名称小于10不需要加0</p>
+                <h5 class="text-primary">目录批量生成 ↓</h5>
+               
             <div class="input-group">
-                <span class="input-group-addon">视频列表地址</span>
-                <input type="text" class="form-control" placeholder="https://ddns.menhood.wang:2233/video/" id="urls">
+                <span class="input-group-addon">视频目录地址</span>
+                <input type="text" class="form-control" placeholder="https://ddns.menhood.wang:2233/video/" id="list_urls">
+            </div>
+            <br>
+            <div class="input-group">
+                <span class="input-group-addon">视频文件后缀名</span>
+                <input type="text" class="form-control" placeholder=".mp4" id="list_suffix">
             </div>
             <br>
             <div class="input-group">
                 <span class="input-group-addon">视频封面地址</span>
-                <input type="text" class="form-control" placeholder="https://ddns.menhood.wang:2233/video/01_pic.jpg" id="pics">
+                <input type="text" class="form-control" placeholder="https://ddns.menhood.wang:2233/video/01_pic.jpg" id="list_pics">
             </div>
             <br>
             <div class="input-group">
-                <span class="input-group-addon">视频总集数</span>
-                <input type="text" class="form-control" placeholder="12" id="max">
+                <span class="input-group-addon">B站视频cids（数组）</span>
+                <input type="text" class="form-control" placeholder="[123456,654321,000000]" id="list_cid">
+            </div>
+            <br>
+            <div class="input-group">
+                <span class="input-group-addon">外挂弹幕目录</span>
+                <input type="text" class="form-control" placeholder="https://api.menhood.wang/xml2json/json/" id="list_additions">
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="name">ul列表样式css</label>
+                <textarea class="form-control" style="min-height: 220px;" rows="3" id="ul_style" placeholder=".playing{box-sizing: border-box;border: 1px solid #00a1d6; color:#00a1d6;}
+.dplistul {z-index:99;float:left!important;width:auto!important;list-style:none!important;padding:0!important;margin:0!important;border:0!important;transition:1s!important;}
+.dplistul a {text-decoration: none;float:left!important;list-style:none!important;margin:5px!important;border-radius:10px!important;height:30px!important;line-height:30px!important;text-align:center!important;width:50px!important;background-color:#fff!important;color:pink!important;cursor: pointer!important;}
+.dplistul a:hover {background-color:pink!important;color:#fff!important;}
+/*.dplayer-danmaku-item{text-shadow: rgb(0, 0, 0) 1px 0px 1px, rgb(0, 0, 0) 0px 1px 1px, rgb(0, 0, 0) 0px -1px 1px, rgb(0, 0, 0) -1px 0px 1px!important;font-weight: bold!important;}*/
+.wbf{}"></textarea>
+            </div>
+                <br>
+                <h5 class="text-success">分P生成 ↓</h5>
+                <p class="help-block">第三方弹幕和B站弹幕（cid）二选一</p>
+                <div class="bs-example bs-example-form info list_info" role="form" id="list_form_0">
+                <hr>
+                <div class="input-group">
+                    <span class="input-group-addon">分集标题 1</span>
+                    <input type="text" class="form-control" placeholder="P01 标题" id="list_title_0">
+                </div>
+                <br>
+                <div class="input-group">
+                    <span class="input-group-addon">视频地址</span>
+                    <input type="text" class="form-control" placeholder="https://ddns.menhood.wang:2233/video/01.mp4" id="list_url_0">
+                </div>
+                <br>
+                <div class="input-group ">
+                    <span class="input-group-addon">视频质量</span>
+                    <input type="text" class="form-control" placeholder="暂未开发" id="list_quality_0" disabled>
+                </div>
+                <br>
+                <div class="input-group">
+                    <span class="input-group-addon">视频封面地址</span>
+                    <input type="text" class="form-control" placeholder="https://ddns.menhood.wang:2233/video/01_pic.jpg" id="list_pic_0">
+                </div>
+                <br>
+                <div class="input-group">
+                    <span class="input-group-addon">B站视频cid</span>
+                    <input type="text" class="form-control" placeholder="25494475" id="list_cid_0">
+                </div>
+                <br>
+                <div class="input-group">
+                    <span class="input-group-addon">外挂弹幕地址</span>
+                    <input type="text" class="form-control" placeholder="https://api.menhood.wang/xml2json/json/01.json" id="list_addition_0">
+                </div>
+                <br>
+                </div>
+                <div class="btn-group" id="ad_btns" >
+                <button class="btn btn-default" id="add" type="button" >添加</button>
+                <button class="btn btn-default" id="del" type="button" >删除</button>
+                </div>
+            </form>
+            
+            <!--API生成iframe代码-->
+            <form class="bs-example bs-example-form" role="form" id="iframe_form" style="display:none">
+                <h4>嵌入代码生成</h4>
+            <div class="input-group" >
+                <span class="input-group-addon">单个视频地址</span>
+                <input type="text" class="form-control" placeholder="https://ddns.menhood.wang:2233/video/01.mp4" id="iframe_url">
+            </div>  
+            <br>
+            <div class="input-group">
+                <span class="input-group-addon">视频列表地址</span>
+                <input type="text" class="form-control" placeholder="https://ddns.menhood.wang:2233/video/" id="iframe_urls">
+            </div>
+            <br>
+            <div class="input-group">
+                <span class="input-group-addon">视频封面地址</span>
+                <input type="text" class="form-control" placeholder="https://ddns.menhood.wang:2233/video/01_pic.jpg" id="iframe_pics">
             </div>
             <br>
             <div class="input-group">
                 <span class="input-group-addon">外挂弹幕地址</span>
-                <input type="text" class="form-control" placeholder="https://api.menhood.wang/xml2json/json/" id="additions">
+                <input type="text" class="form-control" placeholder="https://api.menhood.wang/xml2json/json/" id="iframe_additions">
             </div>
             <br>
             <div class="input-group">
-                <span class="input-group-addon">API服务器地址</span>
-                <input type="text" class="form-control" placeholder="https://api.menhood.wang/dplayer/" id="list-api">
+                <label for="name">自定义样式</label>
+                <textarea class="form-control" rows="3" id="iframe_style" ></textarea>
             </div>
-            
             </form>
+            
         </div>
 
             <br>
             <div class="btn-group">
-                <button class="btn btn-default" id="s" >模式</button>
                 <button class="btn btn-default" id="g" >生成</button>
                 <button class="btn btn-default" id="c" data-clipboard-target="#text">复制</button>
             </div>
+            <br>
             <br>
             <div id="copyinfo" class="alert alert-warning" style="display:none">
             <a href="#" class="close" data-dismiss="alert">
@@ -93,7 +437,7 @@
             </div>
 		</div>
 		
-		<div class="col-md-6 column">
+		<div class="col-lg-6 column">
 			<h3>代码区域</h3>
 <pre >
 <code id="code" >
@@ -105,76 +449,389 @@ function generate(){
 <textarea id="text" style="opacity:0;position:fixed;z-index:-1"></textarea>
 		</div>
 	</div>
-</div>
+    </div>
         
 <script>
-//初始化插件
+//配置数据
+var config = {
+    "mode":"list_form",
+    "live": false,
+    "autoplay": false,
+    "unlimited": false,
+    "screenshot": false,
+    "mutex": true,
+    "hotkey": true,
+    "loop": false,
+    "danmaku": true,
+    
+    "lang": "zh-cn",
+    "preload": "auto",
+    "type": "auto",
+    "subtitle_type": "webvtt",
+    
+    "volume": 0.7,
+    "theme": "#b7daff",
+    "container": "dplayer",
+    "const": "dp",
+    "logo": "",
+    "api": "https://api.menhood.wang/dplayer/",
+    "analysis_api": "https://api.prprpr.me/dplayer/v3/bilibili?cid=",
+    "max": 1,
+    
+    "quality": "",
+    "defaultQuality": 0,
+    "url": "",
+    "pic": "",
+    "thumbnails": "",
+    "subtitle_url": "",
+    "subtitle_fontSize": "20px",
+    "subtitle_bottom": "40px",
+    "subtitle_color": "#fff",
+    "id": "",
+    "token": "tokendemo",
+    "maximum": "",
+    "addition": "",
+    "user": "Menhood",
+    "bottom": "10%",
+    "contextmenu": [],
+    "highlight": [],
+    
+    "titles": [],
+    "urls": [],
+    "list_suffix": ".mp4",
+    "qualitys":[],
+    "pics": [],
+    "cid": [],
+    "cids": [],
+    "additions": [],
+    "dansindex": "",
+    "list_quality": [],
+    "list_defaultQuality": [],
+    "list_thumbnails":[],
+    "listcode": "",
+    "code": ""
+};
+var bak_conf = config;
+var list_num = 0 ;//列表分p
+var qualitys_num = 0 ;//画质数组
 
-var clipboard = new ClipboardJS('#c');
 
-var mode="list";
-var listarr = [];
-var additionsarr = [];
-var listcode = '';
+var clipboard = new ClipboardJS('#c');//初始化复制插件
+var listcode = '';//分p切换html代码
+var ul_style =  ".playing{box-sizing: border-box;border: 1px solid #00a1d6; color:#00a1d6;}\n"+
+                ".dplistul {z-index:99;float:left!important;width:auto!important;list-style:none!important;padding:0!important;margin:0!important;border:0!important;transition:1s!important;}\n"+
+                ".dplistul a {text-decoration: none;float:left!important;list-style:none!important;margin:5px!important;border-radius:10px!important;height:30px!important;line-height:30px!important;text-align:center!important;width:50px!important;background-color:#fff!important;color:pink!important;cursor: pointer!important;}\n"+
+                ".dplistul a:hover {background-color:pink!important;color:#fff!important;}\n"+
+                "\/*.dplayer-danmaku-item{text-shadow: rgb(0, 0, 0) 1px 0px 1px, rgb(0, 0, 0) 0px 1px 1px, rgb(0, 0, 0) 0px -1px 1px, rgb(0, 0, 0) -1px 0px 1px!important;font-weight: bold!important;}*/\n"+
+                ".wbf{}";
+$('#ul_style').val(ul_style);
 
 
-//添加数据
-function pushdata(){
-    //获取数据
-    var urls = document.getElementById('urls').value;
-    var max = document.getElementById('max').value;
-    var additions = document.getElementById('additions').value;
-    //插入数据
-    for(var i=0;i<max;i++){
-    var o = i + 1 ;
-    //判断是否小于10，以添加0
-    if(i<9){
-        var liststr = "'"+urls + "0" + o + ".mp4"+"'";
-        var addstr = "'"+additions  + o + ".json"+"'";
-        listarr.push(liststr);
-        additionsarr.push(addstr);
-    }else{
-        var liststr = "'"+urls  + o + ".mp4"+"'";
-        var addstr = "'"+additions + o + ".json"+"'";
-        listarr.push(liststr);
-        additionsarr.push(addstr);
+//切换模式
+function smode(b,d){
+    var c = ["s","l","i"]
+    var m = $('#control form');
+    for(var i=0;i<m.length;i++){
+        $('#'+m[i].id).hide();
+        $('#'+c[i]).attr("class","btn btn-default");
     }
-    }
+    $('#'+b).show();
+    config.mode = b;
+    $('#'+d).attr("class","btn btn-info");
+}
+$("#s").click(function(){
+    if(config.mode !== "single_form"){
+        smode("single_form","s");
+        $('#max').attr("disabled",true);
+    };
+});
+$("#l").click(function(){
+    if(config.mode !== "list_form"){
+        smode("list_form","l");
+    };
+    $('#max').attr("disabled",false);
+});
+$("#i").click(function(){
+    if(config.mode !== "iframe_form"){
+        smode("iframe_form","i");
+    };
+    $('#max').attr("disabled",false);
+});
 
-for(var l=0;l<max;l++){
-    var m = l+1;
-    if(l<9){
-        listcode = listcode + "<a href='javascript:void(0);' onclick='switchDPlayer(" + l + ")' id='p" + l + "'>P0"+ m +"</a>\n";
+//增删列表输入框
+$('#add').click(function(){
+    list_num = list_num + 1;
+    $("#ad_btns").before(get_config_list_html(list_num));
+});
+$('#del').click(function(){
+    $("#list_form_"+list_num).remove();
+    if(list_num>=0){list_num = list_num - 1;}
+});
+$('#qualitys_add').click(function(){
+    qualitys_num = qualitys_num + 1;
+    $("#qualitys_btn").before(get_config_qualitys_html(qualitys_num));
+});
+$('#qualitys_del').click(function(){
+    $("#qualitys_"+qualitys_num).remove();
+    if(qualitys_num>=0){qualitys_num = qualitys_num - 1;}
+});
+
+//判断API模式
+$('#api_btn').click(function(){
+    var c =document.getElementById('api_btn').checked;
+    if(c){
+        $('#api').attr("disabled",false);
     }else{
-        listcode = listcode + "<a href='javascript:void(0);' onclick='switchDPlayer(" + l + ")' id='p" + l + "'>P"+ m +"</a>\n";
+        $('#api').attr("disabled",true);
+    };
+});
+
+//单视频信息生成
+function get_single_data(){
+    //清空配置参数
+    config.url = '';config.pic = '';config.addition = '';config.defaultQuality='';config.thumbnails= '',config.qualitys=[];
+    //获取新数据
+    config.url = document.getElementById('single_url').value;
+    config.pic = document.getElementById('single_pic').value;
+    config.addition = document.getElementById('single_addition').value;
+    config.thumbnails = document.getElementById('thumbnails').value;
+    if($('#qualitys_default_0').val() === ""){config.defaultQuality = 0}else{config.defaultQuality = $('#qualitys_default_0').val();};
+    
+    var qualitys = $('.qualitys');
+    for(var i=0;i<qualitys.length;i++){
+        var qualitys_name = document.getElementById('qualitys_name_'+i).value;
+        var qualitys_urls = document.getElementById('qualitys_urls_'+i).value;
+        var qualitys_type = $('#qualitys_type_'+i).val();
+        var data = {"name":qualitys_name,"url":qualitys_urls,"type":qualitys_type};
+        
+        config.qualitys.push(data);
     }
 }
+
+//列表信息html生成
+function get_config_list_html(list_num){
+var list_num_1 = list_num + 1 ;
+var config_list_html = '<div class="bs-example bs-example-form info list_info" role="form" id="list_form_'+ list_num +'">'+
+                '<hr>'+
+                '<div class="input-group">'+
+                    '<span class="input-group-addon">分集标题 '+ list_num_1 +'</span>'+
+                    '<input type="text" class="form-control" placeholder="P'+ list_num_1 +' 标题" id="list_title_'+ list_num +'">'+
+                '</div>'+
+                '<br>'+
+                '<div class="input-group">'+
+                    '<span class="input-group-addon">视频地址</span>'+
+                    '<input type="text" class="form-control" placeholder="https://ddns.menhood.wang:2233/video/01.mp4" id="list_url_'+ list_num +'">'+
+                '</div>'+
+                '<br>'+
+                '<div class="input-group">'+
+                    '<span class="input-group-addon">视频质量</span>'+
+                    '<input type="text" class="form-control" placeholder="暂未开发'+
+                    '" id="list_quality_'+ list_num +'"disabled>'+
+                '</div>'+
+                '<br>'+
+                '<div class="input-group">'+
+                    '<span class="input-group-addon">B站视频cid</span>'+
+                    '<input type="text" class="form-control" placeholder="25494475" id="list_cid_'+ list_num +'">'+
+                '</div>'+
+                '<br>'+
+                '<div class="input-group">'+
+                    '<span class="input-group-addon">视频封面地址</span>'+
+                    '<input type="text" class="form-control" placeholder="https://ddns.menhood.wang:2233/video/01_pic.jpg" id="list_pic_'+ list_num +'">'+
+                '</div>'+
+                '<br>'+
+                '<div class="input-group">'+
+                    '<span class="input-group-addon">外挂弹幕地址</span>'+
+                    '<input type="text" class="form-control" placeholder="https://api.menhood.wang/xml2json/json/01.json" id="list_addition_'+ list_num +'">'+
+                '</div>'+
+                '<br>'+
+                '</div>';
+    return(config_list_html);
+}
+
+function get_config_qualitys_html(qualitys_num){
+    
+    var html = '<div id="qualitys_'+ qualitys_num +'" class="qualitys" >'+
+                    '<hr><div class="input-group" >'+
+                        '<span class="input-group-addon">清晰度</span>'+
+                            '<input type="text" class="form-control" placeholder="HD" id="qualitys_name_'+ qualitys_num +'">'+
+                            '</div>'+
+                            '<br>'+
+                            '<div class="input-group" >'+
+                                '<span class="input-group-addon">视频地址</span>'+
+                                '<input type="text" class="form-control" placeholder="https://ddns.menhood.wang:2233/video/01.mp4" id="qualitys_urls_'+ qualitys_num +'">'+
+                            '</div>'+
+                            '<br>'+
+                            '<label for="type">视频类型</label>'+
+		                    '<select class="form-control" id="qualitys_type_'+ qualitys_num +'" >'+
+			                    '<option value="auto">自动</option>'+
+			                    '<option value="hls">hls</option>'+
+			                    '<option value="flv">flv</option>'+
+			                    '<option value="dash">dash</option>'+
+			                    '<option value="webtorrent">webtorrent</option>'+
+			                    '<option value="normal">normal</option>'+
+		                    '</select>'+
+                            '</div>';
+    return(html);
+}
+
+function get_list_data(){
+    //清空配置参数
+    config.listcode = '';
+    config['urls'] = [];
+    config['additions'] = [];
+    config.titles= [];
+    config.urls= [];
+    config.pics= [];
+    config.qualitys= [];
+    config.cids= [];
+    config.additions= [];
+    
+    //获取数据
+    var urls = document.getElementById('list_urls').value;
+    var additions = document.getElementById('list_additions').value;
+        config.const = document.getElementById('const').value;
+        config.pic = document.getElementById('list_pics').value;
+        config.list_suffix = document.getElementById('list_suffix').value;
+        config.cid = document.getElementById('list_cid').value;
+        
+    for(var l=0;l<config.max;l++){
+        var m = l+1;
+        if(l<9){
+            config.listcode = config.listcode + "<a href=\'javascript:void(0);\' onclick=\'switchDPlayer(" + l + ")\' id=\'p" + l + "\'>P0"+ m +"<\/a>\n";
+        }else{
+            config.listcode = config.listcode + "<a href=\'javascript:void(0);\' onclick=\'switchDPlayer(" + l + ")\' id=\'p" + l + "\'>P"+ m +"<\/a>\n";
+        }
+    }    
+        
+    if($('.list_info').length<=1){    
+    //插入数据
+    for(var i=0;i<config.max;i++){
+        var o = i + 1 ;
+        //判断是否小于10，以添加0
+        if(i<9){
+            var liststr = "'"+urls + "0" + o + config.list_suffix +"'";
+            var addstr = "'"+additions  + o + ".json"+"'";
+            config['urls'].push(liststr);
+            config['additions'].push(addstr);
+        }else{
+            var liststr = "'"+urls  + o + config.list_suffix +"'";
+            var addstr = "'"+additions + o + ".json"+"'";
+            config['urls'].push(liststr);
+            config['additions'].push(addstr);
+        };
+    };
+
+    }else{
+        config.max = $('.list_info').length;
+        for(var i=0;i<config.max;i++){
+            var t = "'"+$('#list_title_'+i).val()+"'";
+            var u = "'"+$('#list_url_'+i).val()+"'";
+            var q = "'"+$('#list_quality_'+i).val()+"'";
+            var p = "'"+$('#list_pic_'+i).val()+"'";
+            var c = "'"+$('#list_cid_'+i).val()+"'";
+            var a = "'"+$('#list_addition_'+i).val()+"'";
+            
+            config.titles.push(t);
+            config.urls.push(u);
+            config.pics.push(p);
+            config.qualitys.push(q);
+            config.cids.push(c);
+            config.additions.push(a);
+        }
+        $('#max').val(config.max);
+    }
+}
+
+//checkbox
+$('#live').on('change', function() {config.live = document.getElementById('live').checked;});
+$('#autoplay').on('change', function() {config.autoplay = document.getElementById('autoplay').checked;});
+$('#unlimited').on('change', function() {config.unlimited = document.getElementById('unlimited').checked;});
+$('#screenshot').on('change', function() {config.screenshot = document.getElementById('screenshot').checked;});
+$('#mutex').on('change', function() {config.mutex = document.getElementById('mutex').checked;});
+$('#hotkey').on('change', function() {config.hotkey = document.getElementById('hotkey').checked;});
+$('#danmaku').on('change', function() {config.danmaku = document.getElementById('danmaku').checked;});
+
+//下拉菜单
+$('#lang').on('change', function() {config.lang = $('#lang option:selected').val();});
+$('#preload').on('change', function() {config.preload = $('#preload option:selected').val();});
+$('#type').on('change', function() {config.type = $('#type option:selected').val();});
+$('#subtitle_type').on('change', function() {config.subtitle_type = $('#subtitle_type option:selected').val();});
+
+//输入框
+$('#container').on('change', function() {config.container = $('#container').val();});
+$('#volume').on('change', function() {config.volume = $('#volume').val();});
+$('#theme').on('change', function() {config.theme = $('#theme').val();});
+$('#logo').on('change', function() {config.logo = $('#logo').val();});
+$('#api').on('change', function() {config.api = $('#api').val();});
+$('#max').on('change', function() {config.max = $('#max').val();});
+$('#analysis_api').on('change', function() {config.analysis_api = $('#analysis_api').val();});
+
+//文本框
+
+//添加数据
+function pushdata(mode){
+    
+    switch(mode){
+        case "single_form":
+            get_single_data();
+            splicing("s");
+            config.code = style+css_js+single_js;
+            break;
+        case "list_form":
+            get_list_data();
+            if(document.getElementById('list_urls').value === ""){
+                splicing("l");
+                config.code = style+css_js+list_js+switch_js;
+            }else{
+                splicing("l");
+                config.code = style+css_js+list_index_js+switch_js;
+            };
+            break;
+        case "iframe_form":
+            splicing("i");
+            config.code = iframe_html;
+            break;
+    }
 }
 
 //处理数据
-var style='',css_js='',single_js='',list_js='',switch_js='';
-function splicing(){
-    var urls = document.getElementById('urls').value;
-    var pics = document.getElementById('pics').value;
-    var listapi = document.getElementById('list-api').value;
-    var additions = document.getElementById('additions').value;
-    var addswitch = '';
+var style='',css_js='',single_js='',list_js='',list_index_js='',switch_js='',iframe_html='';
+function splicing(mode){
+    var listapi = config.api;
+    var iframe_style = "";
+    var iframe_ops = "urls="+config.url+"&pic="+config.pic+"&max="+config.max+"&danmaku="+config.danmaku+"&";
+    var videoinfo = [];
     
-    if(listapi === ""){listapi="https://api.suxingboke.com/"};
-    if(pics === ""){pics = "";};
-    if(additions === ""){additions = "";}else{additions = "addition:[additionsarr[0]],";addswitch = "addition:[additionsarr[pn]],";};
- style = "<meta http-equiv='Content-Type' content='text\/html; charset=UTF-8' \/>"+
+    if(mode === "s"){
+    
+    if(config.qualitys.length<1){
+        videoinfo = "video: {url:'"+config.url+"',pic:pic,defaultQuality:defaultQuality,thumbnails:thumbnails},\n"
+    }else{
+        for(var i=0;i<config.qualitys.length;i++){
+            videoinfo.push(JSON.stringify(config.qualitys[i]));
+        }
+        videoinfo="video:{quality: ["+ videoinfo +"],pic:pic,defaultQuality:defaultQuality,thumbnails:thumbnails},";
+        config.url=config.qualitys[0].url;
+    };}
+    
+    if(mode === "l"){
+    var addswitch = "addition:[additionsarr[pn]],";
+        style = "<meta http-equiv='Content-Type' content='text\/html; charset=UTF-8' \/>"+
             "<style>\n"+
-            ".playing{box-sizing: border-box;border: 1px solid #00a1d6; color:#00a1d6;}\n"+
-            ".dplistul {z-index:99;float:left!important;width:auto!important;list-style:none!important;padding:0!important;margin:0!important;border:0!important;transition:1s!important;}\n"+
-            ".dplistul a {text-decoration: none;float:left!important;list-style:none!important;margin:5px!important;border-radius:10px!important;height:30px!important;line-height:30px!important;text-align:center!important;width:50px!important;background-color:#fff!important;color:pink!important;cursor: pointer!important;}\n"+
-            ".dplistul a:hover {background-color:pink!important;color:#fff!important;}\n"+
-            ".dplayer-danmaku-item{text-shadow: rgb(0, 0, 0) 1px 0px 1px, rgb(0, 0, 0) 0px 1px 1px, rgb(0, 0, 0) 0px -1px 1px, rgb(0, 0, 0) -1px 0px 1px!important;font-weight: bold!important;}\n"+
-            ".wbf{}\n"+
-            "</style>\n";
+            document.getElementById('ul_style').value +
+            "</style>\n";}
+    
+    
+    if(mode === "i"){
+    if($('#iframe_style').val() === ""){
+        iframe_style = "width:100%;height:500px;";
+    }else{
+        iframe_style = $('#iframe_style').val();
+    };}
+ 
 
  css_js ="<link href=\'https://cdnjs.loli.net/ajax/libs/dplayer/1.25.0/DPlayer.min.css\' rel=\'stylesheet\'>\n"+
-            "<div id=\'dplayer\'></div><ul class='dplistul'>\n"+ listcode +"<\/ul><div style='clear:both'><\/div>\n"+
+            "<div id=\'dplayer\'></div><ul class='dplistul'>\n"+ config.listcode +"<\/ul><div style='clear:both'><\/div>\n"+
             "<script src=\'https://cdnjs.loli.net/ajax/libs/dplayer/1.25.0/DPlayer.min.js\'><\/script>\n"+
             "<script src=\'https://api.menhood.wang/getcip/getcipv2.php\'><\/script>\n"+
             "<script src=\'https://cdnjs.loli.net/ajax/libs/hls.js/0.9.1/hls.min.js\'><\/script>\n"+
@@ -183,33 +840,53 @@ function splicing(){
             "<script src=\'https://cdnjs.loli.net/ajax/libs/blueimp-md5/2.10.0/js/md5.min.js\'><\/script>\n"+
             "<script>\n";
             
- single_js = "var url='"+ document.getElementById('url').value +"';\n"+
-                "var pic='"+ document.getElementById('pic').value +"';\n"+
-                "var addition='"+ document.getElementById('addition').value +"';\n"+
-                "var api='"+ document.getElementById('single-api').value +"';\n"+
+ single_js = "var url = '"+ config.url +"';\n"+
+                 "var pic='"+ config.pic +"';\n"+
+                "var addition='"+ config.addition +"';\n"+
+                "var api='"+ config.api +"';\n"+
+                "var thumbnails = '"+ config.thumbnails +"';\n"+
+                "var defaultQuality ="+config.defaultQuality+";\n"+
+                "const "+ config.const +" = new DPlayer({\n"+
+                    "container: document.getElementById(\'"+ config.container +"\'),\n"+
+                    videoinfo+
+                    "danmaku: {id: md5(url),\n"+
+                    "api: api,\n"+
+                    "addition:[addition],\n"  +
+                    "user: cip\n"+
+                    "}});\n"+
+                     "<\/script>\n";
+                
+ list_js =   "var listarr=["+ config.urls +"];\n"+
+                "var additionsarr=["+ config.additions +"];\n"+
+                "var url=listarr[0];\n"+
+                "var pic='"+ document.getElementById('list_pics').value +"';\n"+
+                "var additions=additionsarr[0];\n"+
+                "var api='"+ config.api +"';\n"+
+                
                 "const dp = new DPlayer({\n"+
                     "container: document.getElementById(\'dplayer\'),\n"+
                     "video: {url: url},\n"+
                     "danmaku: {id: md5(url),\n"+
-                    "api: \'https://api.prprpr.me/dplayer/\',\n"+
-                     addition +
+                    "api: api,\n"+
+                    "addition: ["+config.additions[0]+"],"+
                     "user: cip\n"+
                     "}});\n";
-                
- list_js =   "var listarr=["+ listarr +"];\n"+
-                "var additionsarr=["+ additionsarr +"];\n"+
+                    
+ list_index_js =  "var listarr=["+ config.urls +"];\n"+
+                "var additionsarr=["+ config.additions +"];\n"+
                 "var url=listarr[0];\n"+
-                "var pic='"+ document.getElementById('pics').value +"';\n"+
+                "var pic='"+ config.pic +"';\n"+
                 "var additions=additionsarr[0];\n"+
-                "var api='"+ listapi +"';\n"+
+                "var api='"+ config.api +"';\n"+
                 
                 "const dp = new DPlayer({\n"+
                     "container: document.getElementById(\'dplayer\'),\n"+
                     "video: {url: url},\n"+
                     "danmaku: {id: md5(url),\n"+
-                    "api: api,\n"+additions+
+                    "api: api,\n"+
+                    "addition: ["+config.additions[0]+"],"+
                     "user: cip\n"+
-                    "}});\n";              
+                    "}});\n";                   
                     
  switch_js = "function switchDPlayer(pn){\n"+
                     "dp.switchVideo({\n"+
@@ -226,47 +903,26 @@ function splicing(){
                         "document.getElementById('p'+i).className=\'wbf\';\n"+
                     "};\n"+
                     "document.getElementById('p'+pn).className=\'playing\';}\n"+
-                    "<\/script>\n";}
+                    "<\/script>\n";
+                    
+    iframe_html = '<iframe src=https://api.menhood.wang/getdplayer/?'+ iframe_ops + '" style="'+ iframe_style +'" frameborder="no" border="0" marginwidth="0" marginheight="0" scrolling="no" allowtransparency="yes"><\/iframe>';
+}
                     
 //生成代码                    
 $("#g").click(function(){
-    //清空数据
-    listarr = [];
-    additionsarr = [];
-    listcode = '';
-    //判断模式
-    if(mode === "single"){
-    code = css_js+single_js;
-    }else{
-    pushdata();
-    splicing();
-    code = style+css_js+list_js+switch_js;
-    }; 
-    document.getElementById("code").innerHTML = htmlEncode(code);//写入html
+    pushdata(config.mode);
+    
+    document.getElementById("code").innerHTML = htmlEncode(config.code);//写入html
     hljs.configure({useBR: false});//关闭换行
-    $('pre code').each(function(i, block) {
-        hljs.highlightBlock(block);
-    });//高亮代码
+    $('pre code').each(function(i, block) { hljs.highlightBlock(block);});//高亮代码
+    
     //插入到textarea准备复制
     var text = $('#code').text();
     var t=document.getElementById("text");
     t.value = text;
 });
 
-//切换模式
-$("#s").click(function(){
-    if($('#single-form').is(':hidden')){
-        $('#single-form').show();
-        $('#list-form').hide();
-        mode="single";
-    }else{
-        $('#single-form').hide();
-        $('#list-form').show(); 
-        mode="list";
-    }
-});
-
-//复制事件
+//复制后弹框提醒
 clipboard.on('success', function(e) {
     $('#copyinfo').show('slow');
     setTimeout(function(){ $('#copyinfo').hide('slow'); }, 3000);
